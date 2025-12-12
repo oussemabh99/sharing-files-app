@@ -1,0 +1,12 @@
+# ===== Node =====
+node_modules/
+npm-debug.log
+.env
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+.venv/
+# ===== IDE/Editor =====
+.vscode/
+.idea/
