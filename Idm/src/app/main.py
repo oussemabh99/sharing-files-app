@@ -1,6 +1,4 @@
-from flask import Blueprint
-
-from app.routes.auth import auth_bp
+from app.routes.idm import auth_bp
 
 def register_routes(app):
 
