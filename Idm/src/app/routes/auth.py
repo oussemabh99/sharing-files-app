@@ -1,0 +1,23 @@
+from flask import Blueprint,request, Response,make_response
+from app.services.users import authenticate_user_service
+from app.services.jwt import create_jwt_service
+idm_bp = Blueprint("idm_bp", __name__)
+@idm_bp.route("/token", methods=["POST","GET"])
+def manage_token(request=request):
+  if request.method == "POST":  
+    body = request.get_json()
+    try:
+        is_authenticated = authenticate_user_service(**body)
+        if is_authenticated:
+            token = create_jwt_service(body.get("username"))
+            responce = make_response({"message": f"{token}"}, 200)
+            responce.set_cookie(key = "idm-token", value = token, max_age = 3600, expires = None, path = '/', domain = None,  secure = None, httponly = False)
+            #resp = Response()
+            #resp.set_cookie(key = "idm-token", value = token, max_age = 3600, expires = None, path = '/', domain = None,  secure = None, httponly = False)
+            return responce
+        else:
+            return {"error": "Invalid credentials"}, 401
+    except ValueError as e:
+        return {"error": str(e)}, 400
+  if request.method == "GET":
+    return {"message": "Token endpoint"}, 200

@@ -77,14 +77,17 @@ def delete_user(user_uuid: str) -> bool:
         session.rollback()
         session.close()
         raise e
-def compare_password(user: str, password: str) -> bool:
+def compare_password(user: str, password: str) -> bool | None:
     session = SessionLocal()
     existing_user = session.query(User).filter(User.username == user).first()
     if not existing_user:
         session.close()
-        return False
+        raise ValueError("User not found.")
     else:
         if existing_user.password_hash == hashlib.sha256(password.encode()).hexdigest():
             session.close()
             return True
-
+        else:
+            session.close()
+            raise ValueError("Incorrect password.")
+         

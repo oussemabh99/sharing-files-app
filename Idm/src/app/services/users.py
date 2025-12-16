@@ -88,3 +88,13 @@ def delete_user_service(uuid: str) -> None:
     except Exception :
         raise ValueError("Error deleting user")
     return True
+def authenticate_user_service(**kwargs) -> bool:
+   username = kwargs.get("username")
+   password = kwargs.get("password")
+   try:
+         is_authenticated = user.compare_password(username, password)
+         return is_authenticated
+   except ValueError as e:
+         raise ValueError("Authentication failed: " + str(e))
+   
+   
