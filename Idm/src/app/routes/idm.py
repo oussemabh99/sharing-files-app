@@ -7,13 +7,15 @@ from app.services.role_permission import create_role_permission_service
 from app.services.group import create_group_service, get_group_all_service
 from app.services.groupeRole import get_group_role_all_service,create_group_role_service,delete_group_role_service
 from app.services.groupeuser import add_user_to_group_service,get_users_in_group_service,get_all_users_in_groups_service
+from app.services.jwt import decode_jwt_service
 auth_bp = Blueprint("auth_bp", __name__)
-@auth_bp.route("", methods=["GET"])
-def login():
-    return {"message": "Login route"}, 200
-@auth_bp.route("/token", methods=["POST"])
-def token():
-    return {"message": "Token route"}, 200
+@auth_bp.before_request
+def check_jwt_key():
+   try :
+     cookie = request.cookies.get("idm-token")
+     decoded = decode_jwt_service(cookie)
+   except Exception as e:
+         return {"error": "Not Authorized"}, 402   
 @auth_bp.route("/users", methods=["POST", "GET"])
 def users(request=request):
     if request.method == "GET":

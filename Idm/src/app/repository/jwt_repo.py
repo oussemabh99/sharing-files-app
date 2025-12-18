@@ -24,4 +24,3 @@ def decode_jwt(token: str) -> dict:
     except Exception as e:
         print("Error decoding JWT:", str(e))
         raise e
-    return {decoded_payload}
