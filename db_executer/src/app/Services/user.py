@@ -9,7 +9,6 @@ def get_user_permission_service(name : str) -> set :
 def get_user_groups_permissions(name : str) -> set :
     all_permissions = set()
     groups = user_repo.get_user_groups(name)
-    #all_permissions = {grp.get_permission_from_group_service(group[0]).union(all_permissions) for group in groups }
     for group in groups :
        all_permissions=grp.get_permission_from_group_service(group[0]).union(all_permissions)
     return all_permissions
@@ -17,5 +16,4 @@ def user_update_service(name : str)-> set :
     user_permission = get_user_permission_service(name)
     user_group = get_user_groups_permissions(name)
     return user_permission.union(user_group)
-print(user_update_service("admin"))
 
