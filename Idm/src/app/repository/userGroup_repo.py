@@ -57,3 +57,20 @@ def delete_group_role(group_uuid: str, role_uuid: str) -> None:
         session.rollback()
         session.close()
         raise e
+def delete_user_from_group(group_uuid: str, user_uuid: str) -> None:
+    session = SessionLocal()
+    user_group = session.query(UserGroup).filter(
+        UserGroup.group_uuid == group_uuid,
+        UserGroup.user_uuid == user_uuid
+    ).first()
+    if not user_group:
+        session.close()
+        raise ValueError("User-Group association does not exist")
+    try:
+        session.delete(user_group)
+        session.commit()
+        session.close()
+    except Exception as e:
+        session.rollback()
+        session.close()
+        raise e

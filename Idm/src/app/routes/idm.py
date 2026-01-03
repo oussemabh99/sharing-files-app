@@ -19,10 +19,7 @@ def check_jwt_key(request=request):
      if (compare_permission_service(request = request.method,path = request.path,permissions=decoded["permissions"])==False):
          return {"error": "No permission to access"}, 402 
    except Exception as e:
-         return {"error": "Not Authorized"}, 402 
-    
-      
-      
+         return {"error": "Not Authorized"}, 402      
 @auth_bp.route("/users", methods=["POST", "GET"])
 def users(request=request):
     if request.method == "GET":

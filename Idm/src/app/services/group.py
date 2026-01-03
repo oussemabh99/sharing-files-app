@@ -1,5 +1,5 @@
 from app.models.models import Group
-from app.repository.group_repo import create_group, get_group_all
+from app.repository.group_repo import get_group_by_name,create_group, get_group_all, get_group_in_organisation,check_group_in_organisation
 def create_group_service(**kwargs) -> str:
     name = kwargs.get("name")
     display_name = kwargs.get("display_name", "")
@@ -29,3 +29,25 @@ def get_group_all_service() -> list[Group]:
         for group in groups
     ]}
     return groups_data
+def get_group_in_organisation_service(organisation_uuid: str) -> list[Group]:
+    groups = get_group_in_organisation(organisation_uuid)
+    groups_data = {"groups":[
+        {
+            "uuid": group.uuid,
+            "name": group.name,
+            "display_name": group.display_name,
+            "organisation_uuid": group.organisation_uuid,
+            "date_created": group.date_created.isoformat(),
+            "date_modified": group.date_modified.isoformat()
+        }
+        for group in groups
+    ]}
+    return groups_data
+def check_group_in_organisation_service(group_uuid: str, organisation_uuid: str) -> bool:
+    is_in_organisation = check_group_in_organisation(group_uuid, organisation_uuid)
+    return is_in_organisation
+def get_group_by_name_service(name: str) -> str | None:
+    group_uuid = get_group_by_name(name)
+    if not group_uuid:
+        raise ValueError(f"Group '{name}' does not exist.")
+    return group_uuid

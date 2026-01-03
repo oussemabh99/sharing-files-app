@@ -46,4 +46,16 @@ def delete_group_role_service(**kwargs) -> None:
         role_uuid=role_uuid
      )
     except Exception as e:
-        raise ValueError("Error deleting group-role association: " + str(e))    
+        raise ValueError("Error deleting group-role association: " + str(e)) 
+def get_group_role_inside_organisation_service(organisation_uuid: str) -> list[GroupRole]:
+    group_roles = group_role_repo.get_group_role_inside_organisation(organisation_uuid)
+    group_roles_data = {"group_roles":[
+        {
+            "group_uuid": group_role.group_uuid,
+            "role_uuid": group_role.role_uuid,
+            "date_created": group_role.date_created.isoformat()
+            
+        }
+        for group_role in group_roles
+    ]}
+    return group_roles_data

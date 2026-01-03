@@ -90,4 +90,16 @@ def compare_password(user: str, password: str) -> bool | None:
         else:
             session.close()
             raise ValueError("Incorrect password.")
-         
+def get_user_in_organisation(organisation_uuid: str) -> list[User]:
+    session = SessionLocal()
+    users = session.query(User).filter(User.organisation_uuid == organisation_uuid).all()
+    session.close()
+    return users         
+def check_user_in_organisation(user_uuid: str, organisation_uuid: str) -> bool:
+    session = SessionLocal()
+    user = session.query(User).filter(
+        User.uuid == user_uuid,
+        User.organisation_uuid == organisation_uuid
+    ).first()
+    session.close()
+    return user is not None

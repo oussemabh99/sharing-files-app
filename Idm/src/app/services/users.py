@@ -1,6 +1,7 @@
 from app.models.models import User
 import app.repository.user_repo as user
 import app.repository.org_repo as org
+import app.services.org as org_service
 def get_user_service() -> User:
     
    
@@ -60,6 +61,11 @@ def get_user_by_username_service(username: str) -> User | None:
         "date_modified": new_user.date_modified.isoformat()
         }
     return user_data
+def get_user_from_username_service(username: str) -> str | None:
+    user_uuid = user.get_user_by_username(username)
+    if not user_uuid:
+        raise ValueError(f"User '{username}' does not exist.")
+    return user_uuid
 def update_user_service(uuid :str,**kwargs) -> str:
     dict = {}
     if user.get_user_by_uuid(uuid) is None :
@@ -96,5 +102,24 @@ def authenticate_user_service(**kwargs) -> bool:
          return is_authenticated
    except ValueError as e:
          raise ValueError("Authentication failed: " + str(e))
-   
+def get_user_in_organisation_service(organisation_uuid: str) -> User:
+    users = user.get_user_in_organisation(organisation_uuid)         
+    users_data = [
+                {
+                    "uuid": user.uuid,
+                    "username": user.username,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "organisation_uuid": org.get_organisation_by_uuid(user.organisation_uuid),
+                    "date_created": user.date_created.isoformat()
+                    
+                }
+                for user in users
+            ]
+    return {"users": users_data}
+def check_user_in_organisation_service(user_uuid: str, organisation_name: str) -> bool:
+    print(f"Checking if user {user_uuid} is in organisation {organisation_name}")
+    is_in_organisation = user.check_user_in_organisation(user_uuid, org_service.get_organisation_uuid_by_name_service(organisation_name))
+    return is_in_organisation
    

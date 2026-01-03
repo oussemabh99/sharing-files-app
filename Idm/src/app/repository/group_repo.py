@@ -39,4 +39,16 @@ def get_group_by_name(name: str) -> Group | None:
     group = session.query(Group).filter(Group.name == name).first()
     session.close()
     return group.uuid
-    
+def get_group_in_organisation(organisation_uuid: str) -> list[Group]:
+    session = SessionLocal()
+    groups = session.query(Group).filter(Group.organisation_uuid == organisation_uuid).all()
+    session.close()
+    return groups
+def check_group_in_organisation(group_uuid: str, organisation_uuid: str) -> bool:
+    session = SessionLocal()
+    group = session.query(Group).filter(
+        Group.uuid == group_uuid,
+        Group.organisation_uuid == organisation_uuid
+    ).first()
+    session.close()
+    return group is not None

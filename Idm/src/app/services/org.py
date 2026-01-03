@@ -26,3 +26,9 @@ def create_organisation_service(**kwargs) -> str:
     except Exception :
         raise ValueError("Error creating organisation")
     return new_organisation.name
+def get_organisation_uuid_by_name_service(name: str) -> str | None:
+    organisation_uuid = org.get_organisation_uuid_by_name(name)
+    if not organisation_uuid:
+        raise ValueError(f"Organisation '{name}' does not exist.")
+    return organisation_uuid
+

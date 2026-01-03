@@ -1,5 +1,5 @@
 from app.extensions.db import SessionLocal
-from app.models.models import GroupRole
+from app.models.models import GroupRole,Group,Role
 import uuid
 import datetime
 def verify_group_role_exists(group_uuid: str, role_uuid: str) -> bool:
@@ -52,3 +52,12 @@ def delete_group_role(group_uuid: str, role_uuid: str) -> None:
         session.rollback()
         session.close()
         raise e
+def get_group_role_inside_organisation(organisation_uuid: str) -> list[GroupRole]:
+    session = SessionLocal()
+    group_roles = session.query(GroupRole).join(
+        Group, GroupRole.group_uuid == Group.uuid
+    ).filter(
+        Group.organisation_uuid == organisation_uuid
+    ).all()
+    session.close()
+    return group_roles
