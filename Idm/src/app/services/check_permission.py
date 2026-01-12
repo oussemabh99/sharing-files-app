@@ -1,6 +1,6 @@
 d = {
      "/idm/api/v1/users":{"GET":"get_users","POST":"edit_users","PUT":"edit_users","DELETE":"edit_users"},
-     "/idm/api/v1/roles":{"GET":"get_roles","POST":"edit_roles"},
+     "/idm/api/v1/roles":{},
      "/idm/api/v1/permissions":{},
      "/idm/api/v1/roles/assign":{},
      "/idm/api/v1/groups":{"GET":"get_groups","POST":"edit_groups"},

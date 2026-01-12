@@ -61,3 +61,12 @@ def get_group_role_inside_organisation(organisation_uuid: str) -> list[GroupRole
     ).all()
     session.close()
     return group_roles
+def get_roles_of_group(group_uuid: str) -> list[Role]:
+    session = SessionLocal()
+    roles = session.query(Role).join(
+        GroupRole, Role.uuid == GroupRole.role_uuid
+    ).filter(
+        GroupRole.group_uuid == group_uuid
+    ).all()
+    session.close()
+    return roles

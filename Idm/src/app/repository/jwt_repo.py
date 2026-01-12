@@ -8,7 +8,7 @@ def create_jwt(user : str , option : dict = {}) -> str:
        "iat": datetime.datetime.now() - datetime.timedelta(hours=1),
        "exp": datetime.datetime.now() + datetime.timedelta(minutes=30),
        "jti": str(uuid.uuid4()),
-       "permissions": option.get("permissions",["get_users"]),
+       "permissions": option.get("permissions",['get_users', 'get_groups', 'edit-roles', 'get-roles', 'edit_groups', 'read_data', 'edit_users', 'write_data']),
        "org": option.get("org","bo")
    }
    try :

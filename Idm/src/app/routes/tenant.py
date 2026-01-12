@@ -1,8 +1,8 @@
 from flask import Blueprint,request
 from app.services.users import get_user_in_organisation_service,create_user_service,check_user_in_organisation_service,get_user_by_username_service,update_user_service,delete_user_service,get_user_from_username_service
 from app.services.org import get_organisation_uuid_by_name_service
-from app.services.groupeuser import add_user_to_group_service,get_users_in_group_service,get_all_users_in_groups_service,delete_user_from_group_service
-from app.services.groupeRole import create_group_role_service,delete_group_role_service,get_group_role_inside_organisation_service
+from app.services.groupeuser import add_user_to_group_service,get_users_in_group_service,get_all_users_in_groups_service,delete_user_from_group_service,verify_user_in_group_service,get_groups_of_user_service
+from app.services.groupeRole import create_group_role_service,delete_group_role_service,get_group_role_inside_organisation_service,get_roles_of_group_service
 from app.services.group import get_group_in_organisation_service,create_group_service,check_group_in_organisation_service,get_group_by_name_service
 tenant_bp = Blueprint("tenant_bp", __name__)
 @tenant_bp.route("/example", methods=["GET"])
@@ -109,6 +109,9 @@ def tenant_group_users(org):
     if request.method == "POST":
         try:
             body = request.get_json()
+            verify = verify_user_in_group_service(**body)
+            if verify:
+                return {"error": "User is already in the group."}, 400
             user_uuid = get_user_from_username_service(body.get("user_name"))
             group_uuid = get_group_by_name_service(body.get("group_name"))
             checking_group = check_group_in_organisation_service(group_uuid, get_organisation_uuid_by_name_service(org))
@@ -136,6 +139,35 @@ def tenant_group_users(org):
             return {"message": f"User deleted from group successfully"}, 200
         except Exception as e:
             return {"error": str(e)}, 400  
+@tenant_bp.route("/user/<user_name>/groups", methods=["GET"])
+def tenant_get_group_users(org, user_name):
+    if request.method == "GET":
+        try:
+            user_uuid = get_user_from_username_service(user_name)
+            checking_user = check_user_in_organisation_service(user_uuid, org)
+            if not checking_user:
+                return {"error": "User not found in this organisation."}, 404
+            groups = get_groups_of_user_service(**{"user_name": user_name})
+            if not groups:
+                return {"message": "User is not in any groups."}, 200
+            return groups, 200
+        except Exception as e:
+            return {"error": str(e)}, 400
+@tenant_bp.route("/group/<group_name>/roles", methods=["GET"])
+def tenant_get_roles_of_group(org, group_name):
+    if request.method == "GET":
+        try:
+            group_uuid = get_group_by_name_service(group_name)
+            checking_group = check_group_in_organisation_service(group_uuid, get_organisation_uuid_by_name_service(org))
+            if not checking_group:
+                return {"error": "Group not found in this organisation."}, 404
+            roles = get_roles_of_group_service(group_name)
+            if not roles:
+                return {"message": "No roles found for this group."}, 200
+            return roles, 200
+        except Exception as e:
+            return {"error": str(e)}, 400
+  
 
 
     

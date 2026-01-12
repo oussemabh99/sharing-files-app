@@ -2,7 +2,7 @@ from app.extensions.db import SessionLocal
 from app.models.models import UserGroup
 import uuid
 import datetime
-def verify_group_role_exists(group_uuid: str, user_uuid: str) -> bool:
+def verify_group_user_exists(group_uuid: str, user_uuid: str) -> bool:
     session = SessionLocal()
     group_role = session.query(UserGroup).filter(
         UserGroup.group_uuid == group_uuid,
@@ -74,3 +74,10 @@ def delete_user_from_group(group_uuid: str, user_uuid: str) -> None:
         session.rollback()
         session.close()
         raise e
+def get_group_of_user(user_uuid: str) -> list[UserGroup]:
+    session = SessionLocal()
+    user_groups = session.query(UserGroup).filter(
+        UserGroup.user_uuid == user_uuid
+    ).all()
+    session.close()
+    return user_groups
