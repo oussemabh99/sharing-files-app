@@ -1,0 +1,7 @@
+sqlalchemy 
+flask
+dotenv
+pyjwt==1.5.3
+cryptography
+uuid
+psycopg2
