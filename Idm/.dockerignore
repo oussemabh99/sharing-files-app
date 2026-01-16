@@ -1,0 +1,28 @@
+# Version control
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environments
+.env
+venv/
+.venv/
+
+# IDE stuff
+.vscode/
+.idea/
+
+# Docker itself
+Dockerfile
+docker-compose.yml
+
+# Logs
+*.log
+
+# Tests & docs (optional)
+tests/
+docs/

@@ -1,7 +1,9 @@
-sqlalchemy 
+uwsgi
+pyuwsgi
+sqlalchemy
 flask
 dotenv
-pyjwt==1.5.3
+pyjwt==2.10.1
 cryptography
 uuid
 psycopg2
