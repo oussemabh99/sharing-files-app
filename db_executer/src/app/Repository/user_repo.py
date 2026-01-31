@@ -1,4 +1,4 @@
-from app.Models.models import User,Role,UserRole,Group,UserGroup
+from app.Models.models import User,Role,UserRole,Group,UserGroup,Organisation
 from app.Extensions.db import SessionLocal
 def get_user_role(name : str) -> list[Role] :
     session = SessionLocal()
@@ -10,3 +10,8 @@ def get_user_groups(name :str)-> list[Group] :
     groups = session.query(Group.name).filter(Group.uuid == UserGroup.group_uuid).filter(User.uuid == UserGroup.user_uuid).filter(User.username == name).all()
     session.close()
     return groups
+def get_user_organisation_name(name : str) -> str :
+    session = SessionLocal()
+    organisation = session.query(Organisation.name).filter(Organisation.uuid == User.organisation_uuid).filter(User.username == name).first()
+    session.close()
+    return organisation[0]
