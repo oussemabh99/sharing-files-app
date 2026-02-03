@@ -15,3 +15,8 @@ def get_user_organisation_name(name : str) -> str :
     organisation = session.query(Organisation.name).filter(Organisation.uuid == User.organisation_uuid).filter(User.username == name).first()
     session.close()
     return organisation[0]
+def get_all_users() -> list[str] :
+    session = SessionLocal()
+    users = session.query(User.username).all()
+    session.close()
+    return users

@@ -40,4 +40,10 @@ def get_user_data_service(name : str)-> dict :
       return ({"permissions" : permission_future.result(),"org" : organisation_future.result()})
     except Exception as e:
        raise e
+def get_all_users_service() -> list :
+    try :
+      users = user_repo.get_all_users()
+      return users
+    except Exception as e:
+       raise e
 
