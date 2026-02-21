@@ -10,6 +10,7 @@ def manage_token(request=request):
         is_authenticated = authenticate_user_service(**body)
         if is_authenticated:
             data = get_user_data_from_redis_service(body.get("username"))
+            print(data)
             token = create_jwt_service(body.get("username"),options= data) 
             responce = make_response({"message": f"{token}"}, 200)
             responce.set_cookie(key = "idm-token", value = token, max_age = 3600, expires = None, path = '/', domain = None,  secure = None, httponly = False)

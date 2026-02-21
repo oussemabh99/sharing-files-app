@@ -4,7 +4,30 @@ from app.services.org import get_organisation_uuid_by_name_service
 from app.services.groupeuser import add_user_to_group_service,get_users_in_group_service,get_all_users_in_groups_service,delete_user_from_group_service,verify_user_in_group_service,get_groups_of_user_service
 from app.services.groupeRole import create_group_role_service,delete_group_role_service,get_group_role_inside_organisation_service,get_roles_of_group_service
 from app.services.group import get_group_in_organisation_service,create_group_service,check_group_in_organisation_service,get_group_by_name_service
+from app.services.jwt import decode_jwt_service
+from app.services.check_permission_for_tenant import compare_permission_service
 tenant_bp = Blueprint("tenant_bp", __name__)
+@tenant_bp.before_request
+def check_org(request=request):
+    cookie_org = request.cookies.get("org")
+    if not cookie_org:
+        return {"error": "Organization information is missing in the request."}, 400
+    try :
+      org= request.path.split("/")[4]
+      if org != cookie_org:
+        return {"error": "Organization information in the request does not match the authenticated user's organization."}, 403
+    except Exception as e:
+        return {"error": "Invalid request path. Organization information is missing."}, 400
+def check_jwt_key(request=request):
+    try :
+     org = request.path.split("/")[4]
+     cookie = request.cookies.get("idm-token")
+     decoded = decode_jwt_service(cookie)
+     print(decoded["permissions"])   
+     if (compare_permission_service(request = request.method,path = request.path,permissions=decoded["permissions"],org=org)==False):
+         return {"error": "No permission to access"}, 402 
+    except Exception as e:
+         return {"error": "Not Authorized"}, 402 
 @tenant_bp.route("/example", methods=["GET"])
 def example_route(org):
     return {"message": f"This is an example route for tenant-specific {org}"}, 200
